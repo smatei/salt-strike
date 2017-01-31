@@ -5,6 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ *
+ * Entry point for the application.
+ *
+ * @author Stefan Matei
+ *
+ */
 @SpringBootApplication
 @ImportResource("classpath:/spring.xml")
 @ResponseBody
