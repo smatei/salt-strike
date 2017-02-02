@@ -16,7 +16,7 @@ public final class SaltCredentials
 {
   private final Properties apiProperties;
 
-  public SaltCredentials()
+  private SaltCredentials()
   {
     apiProperties = new Properties();
 
@@ -32,6 +32,11 @@ public final class SaltCredentials
     }
   }
 
+  public static SaltCredentials GetInstance()
+  {
+    return SingletonHelper.mInstance;
+  }
+
   public final String GetAPIURL()
   {
     return apiProperties.getProperty("salt.api.url");
@@ -45,5 +50,10 @@ public final class SaltCredentials
   public final String GetAPIPassword()
   {
     return apiProperties.getProperty("salt.api.password");
+  }
+
+  private static class SingletonHelper
+  {
+    public static final SaltCredentials mInstance = new SaltCredentials();
   }
 }

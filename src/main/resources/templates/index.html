@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Salt-Strike</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<table style='border: 1px solid black;'>
+		<tr style='border: 1px solid black;'>
+			<th style='border: 1px solid black;'>
+				Host
+			</th>
+			<th style='border: 1px solid black;'>
+				Info
+			</th>			
+		</tr>
+		<tr th:each="entry: ${minions}">
+			<td style='border: 1px solid black;'>
+				<span th:text="${entry.key}"></span>
+			</td>
+			<td style='border: 1px solid black;'>
+				<span th:text="${entry.value}"></span>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
