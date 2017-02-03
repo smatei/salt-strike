@@ -3,25 +3,27 @@
 <head>
     <title>Salt-Strike</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/css/style.css"></link>
 </head>
 <body>
-	<table style='border: 1px solid black;'>
-		<tr style='border: 1px solid black;'>
-			<th style='border: 1px solid black;'>
+	<table>
+		<tr>
+			<th>
 				Host
 			</th>
-			<th style='border: 1px solid black;'>
+			<th>
 				Info
 			</th>			
 		</tr>
 		<tr th:each="entry: ${minions}">
-			<td style='border: 1px solid black;'>
+			<td>
 				<span th:text="${entry.key}"></span>
 			</td>
-			<td style='border: 1px solid black;'>
+			<td>
 				<span th:text="${entry.value}"></span>
 			</td>
 		</tr>
 	</table>
+	<script src="/js/app.js"></script>
 </body>
 </html>
