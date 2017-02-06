@@ -1,29 +1,42 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Salt-Strike</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/css/style.css"></link>
-</head>
-<body>
-	<table>
-		<tr>
-			<th>
-				Host
-			</th>
-			<th>
-				Info
-			</th>			
-		</tr>
-		<tr th:each="entry: ${minions}">
-			<td>
-				<span th:text="${entry.key}"></span>
-			</td>
-			<td>
-				<span th:text="${entry.value}"></span>
-			</td>
-		</tr>
-	</table>
-	<script src="/js/app.js"></script>
-</body>
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+  <head>
+      <title>Salt-Strike</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <link rel="stylesheet" href="/css/style.css"></link>
+  </head>
+  <body>
+    <header>
+      <h1 layout:fragment="header">Minion list</h1>
+    </header>
+
+    <content>
+      <div layout:fragment="content">
+        <table>
+          <tr>
+            <th>
+              Host
+            </th>
+            <th>
+              Info
+          </th>
+          </tr>
+          <tr th:each="entry: ${minions}">
+            <td>
+              <span th:text="${entry.key}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value}"></span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </content>
+
+    <footer>
+      <div layout:fragment="footer">
+        <script src="/js/app.js"></script>
+      </div>
+    </footer>
+  </body>
 </html>
