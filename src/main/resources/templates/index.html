@@ -16,15 +16,57 @@
               Host
             </th>
             <th>
-              Info
-          </th>
+              Node Name
+            </th>
+            <th>
+              Kernel
+            </th>
+            <th>
+              OS
+            </th>
+            <th>
+              Version
+            </th>
+            <th>
+              OS Arch
+            </th>
+            <th>
+              CPU Arch
+            </th>
+            <th>
+              CPU Model
+            </th>
+            <th>
+              RAM
+            </th>
           </tr>
           <tr th:each="entry: ${minions}">
             <td>
               <span th:text="${entry.key}"></span>
             </td>
             <td>
-              <span th:text="${entry.value}"></span>
+              <span th:text="${entry.value.nodename}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value.kernel}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value.os}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value.osmajorrelease}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value.osarch}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value.cpuarch}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value.cpu_model}"></span>
+            </td>
+            <td>
+              <span th:text="${entry.value.mem_total}"></span>
             </td>
           </tr>
         </table>
