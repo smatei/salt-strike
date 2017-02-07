@@ -10,36 +10,40 @@
 
     <content>
       <div layout:fragment="content">
-        <table>
-          <tr>
-            <th>
-              Host
-            </th>
-            <th>
-              Node Name
-            </th>
-            <th>
-              Kernel
-            </th>
-            <th>
-              OS
-            </th>
-            <th>
-              Version
-            </th>
-            <th>
-              OS Arch
-            </th>
-            <th>
-              CPU Arch
-            </th>
-            <th>
-              CPU Model
-            </th>
-            <th>
-              RAM
-            </th>
-          </tr>
+      
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>
+                Host
+              </th>
+              <th>
+                Node Name
+              </th>
+              <th>
+                Kernel
+              </th>
+              <th>
+                OS
+              </th>
+              <th>
+                Version
+              </th>
+              <th>
+                OS Arch
+              </th>
+              <th>
+                CPU Arch
+              </th>
+              <th>
+                CPU Model
+              </th>
+              <th>
+                RAM
+              </th>
+            </tr>
+          </thead>
+          <tbody>
           <tr th:each="entry: ${minions}">
             <td>
               <span th:text="${entry.key}"></span>
@@ -69,6 +73,7 @@
               <span th:text="${entry.value.mem_total}"></span>
             </td>
           </tr>
+          </tbody>
         </table>
       </div>
     </content>
