@@ -1,87 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
-  <head>
-      <title>Salt-Strike</title>
-  </head>
-  <body>
-    <header>
-      <h1 layout:fragment="header">Minion list</h1>
-    </header>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Salt-Strike</title>
+</head>
+<body>
+	<header>
+		<h1 layout:fragment="header">Minion list</h1>
+	</header>
 
-    <content>
-      <div layout:fragment="content">
-      
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>
-                Host
-              </th>
-              <th>
-                Node Name
-              </th>
-              <th>
-                Kernel
-              </th>
-              <th>
-                OS
-              </th>
-              <th>
-                Version
-              </th>
-              <th>
-                OS Arch
-              </th>
-              <th>
-                CPU Arch
-              </th>
-              <th>
-                CPU Model
-              </th>
-              <th>
-                RAM
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-          <tr th:each="entry: ${minions}">
-            <td>
-              <span th:text="${entry.key}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.nodename}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.kernel}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.os}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.osmajorrelease}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.osarch}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.cpuarch}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.cpu_model}"></span>
-            </td>
-            <td>
-              <span th:text="${entry.value.mem_total}"></span>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </content>
+	<div layout:fragment="content">
+		<table class="table table-striped" id="minion-table">
+			<thead>
+				<tr>
+					<th>Host</th>
+					<th>Node Name</th>
+					<th>Kernel</th>
+					<th>OS</th>
+					<th>Version</th>
+					<th>OS Arch</th>
+					<th>CPU Arch</th>
+					<th>RAM</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="entry: ${minions}">
+					<td><span th:text="${entry.key}"></span></td>
+					<td><span th:text="${entry.value.nodename}"></span></td>
+					<td><span th:text="${entry.value.kernel}"></span></td>
+					<td><span th:text="${entry.value.os}"></span></td>
+					<td><span th:text="${entry.value.osmajorrelease}"></span></td>
+					<td><span th:text="${entry.value.osarch}"></span></td>
+					<td><span th:text="${entry.value.cpuarch}"></span></td>
+					<td><span
+						th:text="${#numbers.formatDecimal(entry.value.mem_total/1024, 1, 2)}">
+					</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
-    <footer>
-      <div layout:fragment="footer">
-        <script src="/js/app.js"></script>
-      </div>
-    </footer>
-  </body>
+	<footer>
+		<div layout:fragment="footer">
+			<script src="/js/index.js"></script>
+		</div>
+	</footer>
+</body>
 </html>

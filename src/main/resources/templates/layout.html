@@ -1,18 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
 <head>
-  <title>Layout</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" href="/css/style.css"></link>
+<title>Layout</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="/css/style.css"></link>
 </head>
 <body>
 
-<div class="container">
-  <h1 layout:fragment="header">Header</h1>
+	<div class="container">
+		<h1 layout:fragment="header">Header</h1>
 
-  <div layout:fragment="content">Content.</div>
+		<div layout:fragment="content">Content.</div>
 
-  <div layout:fragment="footer">Footer</div>           
-</div>
+		<div layout:fragment="footer">Footer</div>
+
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+			integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			crossorigin="anonymous">
+  </script>
+		<script src="/js/app.js"></script>
+	</div>
 </body>
 </html>
