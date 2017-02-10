@@ -4,9 +4,11 @@ import java.net.URI;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.suse.salt.netapi.AuthModule;
 import com.suse.salt.netapi.client.SaltClient;
 import com.suse.salt.netapi.config.ClientConfig;
@@ -29,7 +31,19 @@ public class SaltController
    * @return
    */
   @RequestMapping("/")
-  public String index(Model model)
+  public String index()
+  {
+    return "index";
+  }
+
+  /**
+   * API for vuetable. It needs a json with total=, data=[]
+   *
+   * @return
+   */
+  @RequestMapping("/minions")
+  @ResponseBody
+  public String minions()
   {
     SaltCredentials credentials = SaltCredentials.GetInstance();
     SaltClient saltClient = new SaltClient(URI.create(credentials.GetAPIURL()));
@@ -42,13 +56,33 @@ public class SaltController
 
       Map<String, Map<String, Object>> minions = saltClient.getMinions();
 
-      model.addAttribute("minions", minions);
+      JsonObject result = new JsonObject();
+
+      result.addProperty("total", minions.size());
+      JsonArray data = new JsonArray();
+      result.add("data", data);
+
+      minions.entrySet().forEach((Map.Entry<String, Map<String, Object>> entry)->{
+        JsonObject jsonEntry = new JsonObject();
+        jsonEntry.addProperty("minion", entry.getKey());
+        jsonEntry.addProperty("nodename", (String) entry.getValue().get("nodename"));
+        jsonEntry.addProperty("kernel", (String) entry.getValue().get("kernel"));
+        jsonEntry.addProperty("os", (String) entry.getValue().get("os"));
+        jsonEntry.addProperty("osmajorrelease", (String) entry.getValue().get("osmajorrelease"));
+        jsonEntry.addProperty("osarch", (String) entry.getValue().get("osarch"));
+        jsonEntry.addProperty("cpuarch", (String) entry.getValue().get("cpuarch"));
+        jsonEntry.addProperty("mem_total", (Double) entry.getValue().get("mem_total"));
+
+        data.add(jsonEntry);
+      });
+
+      return result.toString();
     }
     catch (SaltException e)
     {
       // TODO: DISPLAY ERROR AND LOG EXCEPTION
       e.printStackTrace();
+      return null;
     }
-    return "index";
   }
 }

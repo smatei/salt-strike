@@ -63,9 +63,8 @@ gulp.task('css', function() {
  Dependencies tasks are called synchronous.
 */
  gulp.task('js-concatenate', function() {
-   gulp.start('js', function() {
-     gulp.start('webpack', function(){});
-   });
+   //gulp.start('js', function() {
+   //});
 
   return gulp.src(vendorFiles)
             .pipe(concat('app.js'))
@@ -89,16 +88,6 @@ function JSTask(aGulpSRC, aDestinationFolder) {
           }))
           .pipe(gulp.dest(aDestinationFolder));
 }
-
-/*
-  Makes modules-loading available using webpack library:
-   https://webpack.github.io/
-*/
-gulp.task('webpack', function () {
-  return gulp.src([      dist + '/js/**/*.js'])
-    .pipe(webpack(require('./webpack-config.js'), webpack2))
-    .pipe(gulp.dest(dist + '/js/'));
-});
 
 gulp.task('default',   ['css', 'js-concatenate']);
 

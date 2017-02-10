@@ -10,39 +10,12 @@
 	</header>
 
 	<div layout:fragment="content">
-		<table class="table table-striped" id="minion-table">
-			<thead>
-				<tr>
-					<th>Host</th>
-					<th>Node Name</th>
-					<th>Kernel</th>
-					<th>OS</th>
-					<th>Version</th>
-					<th>OS Arch</th>
-					<th>CPU Arch</th>
-					<th>RAM</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="entry: ${minions}">
-					<td><span th:text="${entry.key}"></span></td>
-					<td><span th:text="${entry.value.nodename}"></span></td>
-					<td><span th:text="${entry.value.kernel}"></span></td>
-					<td><span th:text="${entry.value.os}"></span></td>
-					<td><span th:text="${entry.value.osmajorrelease}"></span></td>
-					<td><span th:text="${entry.value.osarch}"></span></td>
-					<td><span th:text="${entry.value.cpuarch}"></span></td>
-					<td><span
-						th:text="${#numbers.formatDecimal(entry.value.mem_total/1024, 1, 2)}">
-					</span></td>
-				</tr>
-			</tbody>
-		</table>
+		<div id="minion-table"></div>
 	</div>
 
 	<footer>
 		<div layout:fragment="footer">
-			<script src="/js/index.js"></script>
+			<script src="/js/build.js"></script>
 		</div>
 	</footer>
 </body>
