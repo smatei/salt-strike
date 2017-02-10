@@ -37,7 +37,9 @@ public class SaltController
   }
 
   /**
-   * API for vuetable. It needs a json with total=, data=[]
+   * API for vuetable. It needs a json like this
+   *
+   * http://vuetable.ratiw.net/api/users
    *
    * @return
    */
@@ -56,6 +58,8 @@ public class SaltController
 
       Map<String, Map<String, Object>> minions = saltClient.getMinions();
 
+      // get the result from salt-api and translate it
+      // into the vuetable json.
       JsonObject result = new JsonObject();
 
       result.addProperty("total", minions.size());
