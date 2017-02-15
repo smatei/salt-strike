@@ -46,3 +46,60 @@
 // Utility classes
 @import "bootstrap/utilities";
 
+.ui.vertical.stripe h3 {
+  font-size: 2em;
+}
+.secondary.pointing.menu .toc.item {
+  display: none;
+}
+.vuetable {
+  margin-top: 1em !important;
+}
+.vuetable-wrapper.ui.basic.segment {
+  padding: 0em;
+}
+.vuetable button.ui.button {
+  padding: .5em .5em;
+  font-weight: 400;
+}
+.vuetable button.ui.button i.icon {
+  margin: 0;
+}
+.vuetable th.sortable:hover {
+  color: #2185d0;
+  cursor: pointer;
+}
+.vuetable-actions {
+  width: 15%;
+  padding: 12px 0px;
+  text-align: center;
+}
+.vuetable-pagination {
+  background: #f9fafb !important;
+}
+.vuetable-pagination-info {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.highlight {
+  background-color: yellow;
+}
+.vuetable-detail-row {
+  height: 200px;
+}
+.detail-row {
+  margin-left: 40px;
+}
+.expand-transition {
+  transition: all .5s ease;
+}
+.expand-enter, .expand-leave {
+  height: 0;
+  opacity: 0;
+}
+tr.odd {
+  background-color: #e6f5ff;
+}
+body {
+  overflow-y: scroll;
+}
