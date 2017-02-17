@@ -30,9 +30,15 @@ export default {
           sortField: 'String/nodename',
         },
         {
+          name: 'String/kernel',
+          title: 'Kernel',
+          sortField: 'String/kernel',
+        },        
+        {
           name: 'String/os/osmajorrelease',
           title: 'OS',
           sortField: 'String/os/osmajorrelease',
+          callback: 'osAndLogo',
         },
         {
           name: 'String/osarch',
@@ -40,16 +46,12 @@ export default {
           sortField: 'String/osarch',
         },
         {
-          name: 'String/cpuarch',
-          title: 'CPU Arch',
-          sortField: 'String/cpuarch',
-        },
-        {
           name: 'Double/mem_total',
           title: 'RAM',
           titleClass: 'right aligned',
           dataClass: 'right aligned',
           sortField: 'Double/mem_total',
+          callback: 'toGigaBytes',
         }
       ]
     }
@@ -61,7 +63,23 @@ export default {
     hideLoader: function() {
       this.$parent._data.loading = ''
     },
-    onLoadSuccess (response) {
+    onLoadSuccess(response) {
+    },
+    toGigaBytes(value) {
+      var n = value / 1024;
+      return n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "1,") + " GB";
+    },
+    osAndLogo(value) {
+      var os = value.substring(0, value.indexOf("|"));
+
+      var url = "img/" + os.toLowerCase() + ".svg";
+      var text = value.replace("|", " ");
+
+      return "<img src='img/" + os.toLowerCase()
+        + ".svg' style='width:20px; height:20px;'"
+        + " onerror='this.onerror=null;this.src=\"img/linux.svg\"'"
+        + ">&nbsp;"
+        + text;
     }
   }
 }

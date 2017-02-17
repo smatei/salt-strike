@@ -79,7 +79,7 @@ public class CompositeColumn implements IColumn<String>
     {
       if (sb.length() > 0)
       {
-        sb.append(" ");
+        sb.append("|");
       }
       sb.append(map.get(column.GetSaltAPIName()));
     });

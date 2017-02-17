@@ -28,7 +28,6 @@ public class MinionsRequest extends RequestWrapper
     columnBuilder.appendStringColumn("kernel");
     columnBuilder.appendCompositeColumn("os", "osmajorrelease");
     columnBuilder.appendStringColumn("osarch");
-    columnBuilder.appendStringColumn("cpuarch");
     columnBuilder.appendDoubleColumn("mem_total");
 
     return columnBuilder;

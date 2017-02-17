@@ -25,6 +25,19 @@ let   src           = './assets',
 var isProduction = argv.production;
 global.IsProduction = isProduction;
 
+// Optimize the imgs, cache stuff that already ran through imagemin
+gulp.task('images', function() {
+  return gulp.src(src + '/img/**/*')
+    .pipe(
+      imagemin([
+       imagemin.gifsicle(),
+       imagemin.jpegtran({progressive: true}),
+       imagemin.optipng(),
+       imagemin.svgo()
+      ]))
+    .pipe(gulp.dest(dist + '/img'))
+});
+
 // Clean the dist folder
 gulp.task('clean', function() {
   return del(dist).then(paths => {
@@ -89,6 +102,6 @@ function JSTask(aGulpSRC, aDestinationFolder) {
           .pipe(gulp.dest(aDestinationFolder));
 }
 
-gulp.task('default',   ['css', 'js-concatenate']);
+gulp.task('default',   ['css', 'js-concatenate', 'images']);
 
 //gulp.task('default',   ['clean']);
