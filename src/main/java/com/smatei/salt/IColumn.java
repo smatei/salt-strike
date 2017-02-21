@@ -2,6 +2,7 @@ package com.smatei.salt;
 
 import java.util.Map;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -47,4 +48,14 @@ public interface IColumn<Type>
    * @param saltAPIMap salt api result map
    */
   public void CopyColumnToJson(JsonObject vuetableJSON, Map<String, Object> saltAPIMap);
+
+  /**
+   * Filter the vuetable json object using a text filter.
+   * By default the columns do not have filter enabled (return false).
+   * If a column wants to implement filter, it has to override.
+   */
+  public default boolean MatchesFilter(JsonElement value, String filter)
+  {
+    return false;
+  }
 }

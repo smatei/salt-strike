@@ -4,7 +4,8 @@
   "description": "A set of dependencies for gulp.js - the streaming build system.",
   "dependencies": {
     "vue": "^2.1.10",
-    "vuetable-2": "^1.0.1"
+    "vuetable-2": "^1.0.1",
+    "vue-events": "vue-2.x"
   },
   "devDependencies": {
     "del": "^2.2.0",

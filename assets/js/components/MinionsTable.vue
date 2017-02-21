@@ -1,16 +1,28 @@
 <template>
-  <vuetable ref="vuetable"
-    api-url="/minions"
-    :fields="fields"
-    class="table table-striped table-hover"
-    @vuetable:loading="showLoader"
-    @vuetable:load-success="onLoadSuccess"
-    @vuetable:loaded="hideLoader"
-  ></vuetable>
+  <div>
+    <filter-bar></filter-bar>
+    <vuetable ref="vuetable"
+      api-url="/minions"
+      :fields="fields"
+      class="table table-striped table-hover"
+      :appendParams="moreParams"
+      :sort-order="sortOrder"
+      @vuetable:loading="showLoader"
+      @vuetable:load-success="onLoadSuccess"
+      @vuetable:loaded="hideLoader"
+    ></vuetable>
+  </div>
 </template>
 
 <script>
 import Vuetable from 'vuetable-2/src/components/Vuetable.vue'
+import FilterBar from './MinionsFilterBar.vue'
+
+import Vue from 'vue'
+import VueEvents from 'vue-events'
+Vue.use(VueEvents)
+
+Vue.component('filter-bar', FilterBar)
 
 export default {
   components: {
@@ -21,7 +33,7 @@ export default {
       fields: [
         {
           name: 'String/id',
-          title: 'Minion',
+          title: 'Minion ID',
           sortField: 'String/id',
         },
         {
@@ -53,7 +65,15 @@ export default {
           sortField: 'Double/mem_total',
           callback: 'toGigaBytes',
         }
-      ]
+      ],
+      sortOrder: [
+        {
+          field: 'String/id',
+          sortField: 'String/id',
+          direction: 'asc'
+        }
+      ],
+      moreParams: {}
     }
   },
   methods: {
@@ -80,6 +100,19 @@ export default {
         + " onerror='this.onerror=null;this.src=\"img/linux.svg\"'"
         + ">&nbsp;"
         + text;
+    }
+  },
+  events: {
+    'filter-set' (filterText) {
+      this.moreParams = {
+        'filter': filterText
+      }
+      Vue.nextTick( () => this.$refs.vuetable.refresh())
+    },
+    'filter-reset' () {
+      this.moreParams = {}
+      this.$refs.vuetable.refresh()
+      Vue.nextTick( () => this.$refs.vuetable.refresh())
     }
   }
 }

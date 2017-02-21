@@ -38,7 +38,8 @@ public class SaltController
    */
   @RequestMapping(value = "/minions", method = RequestMethod.GET)
   @ResponseBody
-  public String minions(@RequestParam("sort") String sort)
+  public String minions(@RequestParam("sort") String sort,
+      @RequestParam(value = "filter", required = false) String filter)
   {
     // the requests come in this format
     // minions?sort=String%2Fos%2Fosmajorrelease%7Casc&page=1&per_page=10
@@ -60,7 +61,7 @@ public class SaltController
     {
       MinionsRequest request = new MinionsRequest();
 
-      return request.GetJson(sortCriteria, sortOrder, sortType);
+      return request.GetJson(sortCriteria, sortOrder, sortType, filter);
     }
     catch (SaltException e)
     {

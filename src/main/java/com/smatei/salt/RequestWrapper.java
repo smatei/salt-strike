@@ -41,7 +41,8 @@ public abstract class RequestWrapper
    * @return
    * @throws SaltException
    */
-  public String GetJson(final String sortCriteria, final String sortOrder, final String sortType) throws SaltException
+  public String GetJson(final String sortCriteria, final String sortOrder, final String sortType, String filter)
+      throws SaltException
   {
     Map<String, Map<String, Object>> apiCallResult = CallSaltAPI();
 
@@ -54,9 +55,12 @@ public abstract class RequestWrapper
 
     apiCallResult.entrySet().forEach((Map.Entry<String, Map<String, Object>> entry) ->
     {
-      JsonObject jsonEntry = columnBuilder.GetJson(entry.getValue());
+      JsonObject jsonEntry = columnBuilder.GetJson(entry.getValue(), filter);
 
-      dataList.add(jsonEntry);
+      if (jsonEntry != null)
+      {
+        dataList.add(jsonEntry);
+      }
     });
 
     if (sortCriteria != null && sortOrder != null)
