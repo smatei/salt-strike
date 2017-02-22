@@ -1,6 +1,7 @@
 package com.smatei.salt;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,19 @@ public class SaltController
   public String index()
   {
     return "index";
+  }
+
+  /**
+   * Run commands.
+   *
+   * @param model
+   * @return
+   */
+  @RequestMapping("/run.html")
+  public String run(Model model)
+  {
+    model.addAttribute("test", "gigi");
+    return "run";
   }
 
   /**

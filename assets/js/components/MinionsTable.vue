@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m-4">
     <filter-bar></filter-bar>
     <vuetable ref="vuetable"
       api-url="/minions"

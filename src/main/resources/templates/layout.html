@@ -1,31 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
-<head>
-<title>Layout</title>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head (title)">
+<title th:text="${title}">Layout</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="/css/style.css"></link>
-<link rel="stylesheet" 
-  href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" 
-  media="screen" title="no title" charset="utf-8"></link>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
+	media="screen" title="no title" charset="utf-8"></link>
 </head>
 <body>
-
 	<div class="container">
-		<h1 layout:fragment="header">Header</h1>
 
-		<div layout:fragment="content">Content.</div>
+		<div th:fragment="navbar (page)">
+			<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+				<button class="navbar-toggler navbar-toggler-right" type="button"
+					data-toggle="collapse" data-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-		<div layout:fragment="footer">Footer</div>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+						<li th:classappend="${page == 'index' ? 'active' : ''}"
+							class="nav-item"><a class="nav-link" th:href="@{/}">Home</a>
+						</li>
+						<li th:classappend="${page == 'run' ? 'active' : ''}"
+							class="nav-item"><a class="nav-link" th:href="@{/run.html}">Run</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
 
-    <script
-      src="https://code.jquery.com/jquery-3.1.1.min.js"
-      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-      crossorigin="anonymous"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js"
-      charset="utf-8"></script>  
-		<script src="/js/app.js"></script>
+		<div th:fragment="header (header_title)">
+			<h1 th:text="${header_title}"></h1>
+		</div>
+
+		<div th:fragment="footer">
+			<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+				integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+				crossorigin="anonymous"></script>
+			<script
+				src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js"
+				charset="utf-8"></script>
+			<script src="/js/app.js"></script>
+			<script src="/js/build.js"></script>
+		</div>
 	</div>
 </body>
 </html>

@@ -1,22 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout">
-<head>
-<title>Salt-Strike</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head('Salt-Strike')"></head>
 <body>
-	<header>
-		<h1 layout:fragment="header">Minion list</h1>
-	</header>
+	<div th:replace="layout :: navbar('index')"></div>
 
-	<div layout:fragment="content">
-		<div id="minion-table"></div>
-	</div>
+	<!--div th:replace="layout :: header('Minions List')"></div-->
 
-	<footer>
-		<div layout:fragment="footer">
-			<script src="/js/build.js"></script>
-		</div>
-	</footer>
+	<div id="minion-table"></div>
+
+	<div th:replace="layout:: footer"></div>
 </body>
 </html>
