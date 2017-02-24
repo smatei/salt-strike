@@ -39,7 +39,8 @@ public class SaltController
   @RequestMapping("/run.html")
   public String run(Model model)
   {
-    model.addAttribute("test", "gigi");
+    // pass data from java to html
+    // model.addAttribute("attribute", "value");
     return "run";
   }
 

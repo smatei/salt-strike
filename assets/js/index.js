@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import MinionsTable from './components/MinionsTable.vue'
 
-var zzz = new Vue({
+new Vue({
   el: '#minion-table',
   data: {
 	loading: 'loading'

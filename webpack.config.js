@@ -5,13 +5,16 @@ module.exports = {
     }
   },
   // This is the "main" file which should include all other modules
-  entry: './assets/js/index.js',
+  entry: {
+    'index': './assets/js/index.js',
+    'run': './assets/js/run.js'
+  },
   // Where should the compiled file go?
   output: {
     // To the `dist` folder
     path: './target/classes/static/js/',
     // With the filename `build.js` so it's dist/build.js
-    filename: 'build.js'
+    filename: '[name].js'
   },
   module: {
     // Special compilation rules
