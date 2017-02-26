@@ -1,13 +1,9 @@
 import Vue from 'vue'
 import MinionsTable from './components/MinionsTable.vue'
 
+Vue.component('minions-table', MinionsTable);
+
 new Vue({
   el: '#minion-table',
-  data: {
-	loading: 'loading'
-  },
-  template: '<div id="minion-table" ' +
-    ':class="[{\'vuetable-wrapper ui basic segment\': true}, loading]">' +
-    '<minions-table ref="minionref" /></div>',
-  components: { MinionsTable }
+  template: '<minions-table/>'
 })

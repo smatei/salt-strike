@@ -7,7 +7,8 @@ module.exports = {
   // This is the "main" file which should include all other modules
   entry: {
     'index': './assets/js/index.js',
-    'run': './assets/js/run.js'
+    'run': './assets/js/run.js',
+    'example': './assets/js/example.js'
   },
   // Where should the compiled file go?
   output: {

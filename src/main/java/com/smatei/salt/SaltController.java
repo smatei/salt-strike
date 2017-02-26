@@ -39,9 +39,21 @@ public class SaltController
   @RequestMapping("/run.html")
   public String run(Model model)
   {
-    // pass data from java to html
-    // model.addAttribute("attribute", "value");
     return "run";
+  }
+
+  /**
+   * Example.
+   *
+   * @param model
+   * @return
+   */
+  @RequestMapping("/example.html")
+  public String example(Model model)
+  {
+    // pass data from java to html
+    model.addAttribute("javaParam", "javaParamValue");
+    return "example";
   }
 
   /**

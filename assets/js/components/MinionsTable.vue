@@ -1,16 +1,18 @@
 <template>
-  <div class="m-4">
+   <div class="m-4">
     <filter-bar></filter-bar>
-    <vuetable ref="vuetable"
-      api-url="/minions"
-      :fields="fields"
-      class="table table-striped table-hover"
-      :appendParams="moreParams"
-      :sort-order="sortOrder"
-      @vuetable:loading="showLoader"
-      @vuetable:load-success="onLoadSuccess"
-      @vuetable:loaded="hideLoader"
-    ></vuetable>
+    <div :class="[{'vuetable-wrapper ui basic segment': true}, loading]">
+      <vuetable ref="vuetable"
+        api-url="/minions"
+        :fields="fields"
+        class="table table-striped table-hover"
+        :appendParams="moreParams"
+        :sort-order="sortOrder"
+        @vuetable:loading="showLoader"
+        @vuetable:load-success="onLoadSuccess"
+        @vuetable:loaded="hideLoader">
+      </vuetable>
+    </div>
   </div>
 </template>
 
@@ -30,6 +32,7 @@ export default {
   },
   data () {
     return {
+      loading: 'loading',
       fields: [
         {
           name: 'String/id',
@@ -78,10 +81,10 @@ export default {
   },
   methods: {
     showLoader: function() {
-      this.$parent._data.loading = 'loading';
+      this.loading = 'loading';
     },
     hideLoader: function() {
-      this.$parent._data.loading = ''
+      this.loading = ''
     },
     onLoadSuccess(response) {
     },

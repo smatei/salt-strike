@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head('Salt-Strike Example')"></head>
+<body>
+  <div id="example"></div>
+
+  <script th:inline="javascript">
+
+      /*<![CDATA[*/
+         // pass data from java to javascript
+         var javaParameter = /*[[${javaParam}]]*/;
+       /*]]>*/
+    </script>
+
+  <div th:replace="layout:: footer"></div>
+  <script src="/js/example.js"></script>
+</body>
+</html>
