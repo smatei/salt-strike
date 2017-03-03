@@ -5,5 +5,8 @@ Vue.component('run-commands', RunCommands);
 
 new Vue({
   el: '#run-commands',
-  template: '<run-commands/>'
+  data: {
+	modules: JSON.parse(modules)
+  },
+  template: '<run-commands :modulesProp="modules"/>'
 })

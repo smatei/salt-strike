@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.suse.salt.netapi.exception.SaltException;
 
 /**
@@ -39,6 +41,54 @@ public class SaltController
   @RequestMapping("/run.html")
   public String run(Model model)
   {
+    JsonObject modules = new JsonObject();
+
+    // TODO: build module object using reflection
+    // from com.suse.salt.netapi.calls JsonObject
+    JsonObject module = new JsonObject();
+    module.addProperty("name", "Test");
+    module.addProperty("default", "ping");
+    JsonArray functions = new JsonArray();
+    JsonObject function = new JsonObject();
+    function.addProperty("name", "echo");
+    functions.add(function);
+    function = new JsonObject();
+    function.addProperty("name", "ping");
+    functions.add(function);
+    module.add("functions", functions);
+
+    modules.add("Test", module);
+
+    module = new JsonObject();
+    module.addProperty("name", "Cmd");
+    module.addProperty("default", "run");
+    functions = new JsonArray();
+    function = new JsonObject();
+    function.addProperty("name", "exec_code_all");
+    functions.add(function);
+    function = new JsonObject();
+    function.addProperty("name", "run");
+    functions.add(function);
+    module.add("functions", functions);
+
+    modules.add("Cmd", module);
+
+    module = new JsonObject();
+    module.addProperty("name", "Status");
+    module.addProperty("default", "meminfo");
+    functions = new JsonArray();
+    function = new JsonObject();
+    function.addProperty("name", "meminfo");
+    functions.add(function);
+    function = new JsonObject();
+    function.addProperty("name", "uptime");
+    functions.add(function);
+    module.add("functions", functions);
+
+    modules.add("Status", module);
+
+    model.addAttribute("modules", modules.toString());
+
     return "run";
   }
 

@@ -1,5 +1,5 @@
 <template>
-   <div class="m-4">
+  <div class="m-4">
     <filter-bar></filter-bar>
     <div :class="[{'vuetable-wrapper ui basic segment': true}, loading]">
       <vuetable ref="vuetable"

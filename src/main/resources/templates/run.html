@@ -9,12 +9,9 @@
 	<div id="run-commands"></div>
 
 	<script th:inline="javascript">
-
-      /*<![CDATA[*/
-         // pass data from java to javascript
-         // var user = /*[[${test}]]*/ 'User Name';
-       /*]]>*/
-    </script>
+    // pass data from java to javascript
+    var modules = /*[[${modules}]]*/;
+  </script>
 
 	<div th:replace="layout:: footer"></div>
 	<script src="/js/run.js"></script>
