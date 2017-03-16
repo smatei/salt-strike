@@ -1,5 +1,12 @@
 package com.smatei.salt;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +16,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.suse.salt.netapi.AuthModule;
+import com.suse.salt.netapi.calls.LocalCall;
+import com.suse.salt.netapi.client.SaltClient;
+import com.suse.salt.netapi.config.ClientConfig;
+import com.suse.salt.netapi.datatypes.target.Glob;
+import com.suse.salt.netapi.datatypes.target.Target;
 import com.suse.salt.netapi.exception.SaltException;
+import com.suse.salt.netapi.results.Result;
 
 /**
  * Handle web requests for this application.
@@ -58,20 +74,6 @@ public class SaltController
     module.add("functions", functions);
 
     modules.add("Test", module);
-
-    module = new JsonObject();
-    module.addProperty("name", "Cmd");
-    module.addProperty("default", "run");
-    functions = new JsonArray();
-    function = new JsonObject();
-    function.addProperty("name", "exec_code_all");
-    functions.add(function);
-    function = new JsonObject();
-    function.addProperty("name", "run");
-    functions.add(function);
-    module.add("functions", functions);
-
-    modules.add("Cmd", module);
 
     module = new JsonObject();
     module.addProperty("name", "Status");
@@ -146,5 +148,82 @@ public class SaltController
       e.printStackTrace();
       return null;
     }
+  }
+
+  /**
+   * Run command using salt-api.
+   *
+   * @param module Salt module
+   * @param function Salt module function
+   *
+   * @return json with result
+   */
+  @RequestMapping(value = "/run", method = RequestMethod.POST)
+  @ResponseBody
+  public String runCommand(@RequestParam("module") String module,
+      @RequestParam("function") String function)
+  {
+    String packageName = "com.suse.salt.netapi.calls.modules.";
+    String classFullName = packageName + module;
+
+    JsonObject result = new JsonObject();
+
+    Class clazz;
+    try
+    {
+      clazz = Class.forName(classFullName);
+
+      Method method = clazz.getMethod(function, null);
+      LocalCall call = (LocalCall) method.invoke(null, null);
+
+      SaltCredentials credentials = SaltCredentials.GetInstance();
+      SaltClient saltClient = new SaltClient(URI.create(credentials.GetAPIURL()));
+      ClientConfig config = saltClient.getConfig();
+      config.put(ClientConfig.SOCKET_TIMEOUT, 20000);
+
+      Target<String> target = new Glob("*");
+
+      Map<String, Result> res = call.callSync(saltClient, target, credentials.GetAPIUser(),
+          credentials.GetAPIPassword(), AuthModule.PAM);
+
+      result.addProperty("total", res.size());
+
+      JsonArray data = new JsonArray();
+      result.add("data", data);
+
+      res.entrySet().stream().forEach((Map.Entry<String, Result> entry) ->
+      {
+        Result val = entry.getValue();
+        JsonObject object = null;
+        try
+        {
+          JsonParser parser = new JsonParser();
+          object = parser.parse(val.result().get().toString()).getAsJsonObject();
+        }
+        catch(IllegalStateException | JsonSyntaxException ex)
+        {
+          object = new JsonObject();
+          object.addProperty("result", val.result().get().toString());
+        }
+
+        object.addProperty("minion", entry.getKey());
+        data.add(object);
+      });
+    }
+    catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException
+        | InvocationTargetException | SaltException e)
+    {
+      // TODO log exception here
+      e.printStackTrace();
+
+      StringWriter sw = new StringWriter();
+      e.printStackTrace(new PrintWriter(sw));
+      String exceptionAsString = sw.toString();
+
+      result.addProperty("error_message", e.getMessage());
+      result.addProperty("error_description", exceptionAsString);
+    }
+
+    return result.toString();
   }
 }
