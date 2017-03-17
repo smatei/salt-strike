@@ -39,7 +39,12 @@
         </p>
       </div>
 
-      <div class="card-block" id="result">
+      <div class="card-block">
+        <div id="result_json_formatted" class="m-4">
+        </div>
+
+        <div id="result_json" class="m-4">
+        </div>
       </div>
     </div>
   </div>
@@ -92,10 +97,11 @@ export default {
         obj.resultsModule = obj.moduleField;
         obj.resultsFunction = obj.functionField;
 
-        document.getElementById("result").innerHTML = '';
+        document.getElementById("result_json_formatted").innerHTML = '';
+        document.getElementById("result_json").innerHTML = msg;
 
         var config = {
-          hoverPreviewEnabled: false,
+          hoverPreviewEnabled: true,
           hoverPreviewArrayCount: 100,
           hoverPreviewFieldCount: 5,
           theme: '',
@@ -104,7 +110,7 @@ export default {
         };
         var formatter = new JSONFormatter(JSON.parse(msg), 3, config);
 
-        document.getElementById("result").appendChild(formatter.render());
+        document.getElementById("result_json_formatted").appendChild(formatter.render());
       });
     }
   }

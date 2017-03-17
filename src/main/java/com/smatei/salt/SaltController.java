@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -168,7 +169,7 @@ public class SaltController
 
     JsonObject result = new JsonObject();
 
-    Class clazz;
+    Class<?> clazz;
     try
     {
       clazz = Class.forName(classFullName);
@@ -183,22 +184,33 @@ public class SaltController
 
       Target<String> target = new Glob("*");
 
-      Map<String, Result> res = call.callSync(saltClient, target, credentials.GetAPIUser(),
+      Map<String, Result<?>> res = call.callSync(saltClient, target, credentials.GetAPIUser(),
           credentials.GetAPIPassword(), AuthModule.PAM);
 
-      result.addProperty("total", res.size());
-
       JsonArray data = new JsonArray();
-      result.add("data", data);
+      result.add("return", data);
 
-      res.entrySet().stream().forEach((Map.Entry<String, Result> entry) ->
+      Gson gson = new Gson();
+
+      // parse salt library result and
+      // rebuild the original JSON
+      // TODO: maybe extract this to a separate function
+      res.entrySet().stream().forEach((Map.Entry<String, Result<?>> entry) ->
       {
-        Result val = entry.getValue();
+        Result<?> val = entry.getValue();
         JsonObject object = null;
         try
         {
           JsonParser parser = new JsonParser();
-          object = parser.parse(val.result().get().toString()).getAsJsonObject();
+
+          if (val.result().get() instanceof com.google.gson.internal.LinkedTreeMap)
+          {
+            object = gson.toJsonTree(val.result().get()).getAsJsonObject();
+          }
+          else
+          {
+            object = parser.parse(val.result().get().toString()).getAsJsonObject();
+          }
         }
         catch(IllegalStateException | JsonSyntaxException ex)
         {
@@ -206,8 +218,9 @@ public class SaltController
           object.addProperty("result", val.result().get().toString());
         }
 
-        object.addProperty("minion", entry.getKey());
-        data.add(object);
+        JsonObject item = new JsonObject();
+        item.add(entry.getKey(), object);
+        data.add(item);
       });
     }
     catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException
