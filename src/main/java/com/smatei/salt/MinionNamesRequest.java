@@ -16,18 +16,13 @@ import com.suse.salt.netapi.exception.SaltException;
  * @author Stefan Matei
  *
  */
-public class MinionsRequest extends RequestWrapper
+public class MinionNamesRequest extends RequestWrapper
 {
   @Override
   protected ColumnBuilder CreateColumnBuilder()
   {
     ColumnBuilder columnBuilder = new ColumnBuilder();
-
     columnBuilder.appendStringColumn("id");
-    columnBuilder.appendStringColumn("kernel");
-    columnBuilder.appendCompositeColumn("os", "osmajorrelease");
-    columnBuilder.appendStringColumn("osarch");
-    columnBuilder.appendDoubleColumn("mem_total");
 
     return columnBuilder;
   }

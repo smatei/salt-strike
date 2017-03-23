@@ -40,11 +40,6 @@ export default {
           sortField: 'String/id',
         },
         {
-          name: 'String/nodename',
-          title: 'Nodename',
-          sortField: 'String/nodename',
-        },
-        {
           name: 'String/kernel',
           title: 'Kernel',
           sortField: 'String/kernel',

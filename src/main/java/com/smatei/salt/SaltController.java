@@ -5,6 +5,8 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ import com.suse.salt.netapi.calls.LocalCall;
 import com.suse.salt.netapi.client.SaltClient;
 import com.suse.salt.netapi.config.ClientConfig;
 import com.suse.salt.netapi.datatypes.target.Glob;
+import com.suse.salt.netapi.datatypes.target.MinionList;
 import com.suse.salt.netapi.datatypes.target.Target;
 import com.suse.salt.netapi.exception.SaltException;
 import com.suse.salt.netapi.results.Result;
@@ -152,6 +155,29 @@ public class SaltController
   }
 
   /**
+   * API for vue-select. List of minions.
+   *
+   * @return
+   */
+  @RequestMapping(value = "/minionlist", method = RequestMethod.POST)
+  @ResponseBody
+  public String minionList()
+  {
+    try
+    {
+      MinionNamesRequest request = new MinionNamesRequest();
+
+      return request.GetJson(null, null, null, null);
+    }
+    catch (SaltException e)
+    {
+      // TODO: DISPLAY ERROR AND LOG EXCEPTION
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
    * Run command using salt-api.
    *
    * @param module Salt module
@@ -162,7 +188,9 @@ public class SaltController
   @RequestMapping(value = "/run", method = RequestMethod.POST)
   @ResponseBody
   public String runCommand(@RequestParam("module") String module,
-      @RequestParam("function") String function)
+      @RequestParam("function") String function,
+      @RequestParam("target_type") String targetType,
+      @RequestParam("targets") String targets)
   {
     String packageName = "com.suse.salt.netapi.calls.modules.";
     String classFullName = packageName + module;
@@ -182,9 +210,26 @@ public class SaltController
       ClientConfig config = saltClient.getConfig();
       config.put(ClientConfig.SOCKET_TIMEOUT, 20000);
 
-      Target<String> target = new Glob("*");
+      Target<?> saltTarget = null;
 
-      Map<String, Result<?>> res = call.callSync(saltClient, target, credentials.GetAPIUser(),
+      switch(targetType)
+      {
+      case "All":
+        saltTarget = new Glob("*");
+        break;
+      case "Hosts":
+        JsonParser parser = new JsonParser();
+        JsonArray hosts = parser.parse(targets).getAsJsonArray();
+        List<String> array = new ArrayList<String>();
+        hosts.forEach(element->{
+          array.add(element.getAsString());
+        });
+
+        saltTarget = new MinionList(array);
+        break;
+      }
+
+      Map<String, Result<?>> res = call.callSync(saltClient, saltTarget, credentials.GetAPIUser(),
           credentials.GetAPIPassword(), AuthModule.PAM);
 
       JsonArray data = new JsonArray();

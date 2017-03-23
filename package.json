@@ -5,7 +5,8 @@
   "dependencies": {
     "vue": "^2.1.10",
     "vuetable-2": "^1.0.1",
-    "vue-events": "vue-2.x"
+    "vue-events": "vue-2.x",
+    "vue-select": "^2.2.0"
   },
   "devDependencies": {
     "del": "^2.2.0",

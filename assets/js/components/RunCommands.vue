@@ -23,6 +23,20 @@
           <option v-for="funct in modulesProp[moduleField].functions" :value="funct.name">{{funct.name}}</option>
         </select>
 
+        <label for="targetSelectID" class="form-control-label">
+          Target
+        </label>
+        <select id="targetSelectID" class="form-control" v-model="targetField">
+          <option value="All">All</option>
+          <option value="Hosts">Hosts</option>
+        </select>
+
+        <div v-cloak v-show="showHosts()">
+          <label for="targetHostsID" class="form-control-label">
+            Hosts
+          </label>
+          <v-select :searchable=true multiple :onChange=selectionChanged :options=hostList></v-select>
+        </div>
       </div>
       <div class="card-footer text-muted">
         <button type="button" class="btn btn-primary" v-on:click="runCommand()">
@@ -52,6 +66,9 @@
 
 <script>
 import JSONFormatter from 'json-formatter-js';
+import Vue from 'vue';
+import vSelect from 'vue-select';
+Vue.component('v-select', vSelect);
 
 export default {
   data () {
@@ -61,13 +78,35 @@ export default {
       loading: "",
       showResults: false,
       resultsModule: "",
-      resultsFunction: ""
+      resultsFunction: "",
+      targetField: "All",
+      selectedHosts: null,
+      hostList: []
     }
   },
   watch: {
     moduleField: function (val) {
       console.log(val);
       this.functionField = this.modulesProp[val].default;
+    },
+    targetField: function (val) {
+      if (val == 'Hosts' && this.hostList.length == 0)
+      {
+        var vueObj = this;
+        $.ajax({
+          type: "POST",
+          url: "minionlist"
+        }).done(function (msg) {
+          console.log(msg);
+          var result = JSON.parse(msg);
+
+          for (var key in result.data)
+          {
+            var value = result.data[key]['String/id'];
+            vueObj.hostList.push(value);
+          }
+        });
+      }
     }
   },
   props: {
@@ -77,17 +116,28 @@ export default {
     }
   },
   methods: {
+    selectionChanged: function(value) {
+      console.log("selection changed " + value);
+      this.selectedHosts = JSON.stringify(value);
+    },
+    showHosts: function() {
+      return this.targetField == "Hosts";
+    },
     runCommand: function() {
       console.log(this.moduleField + " " + this.functionField);
       this.loading = 'loading';
       var obj = this;
+      var target = (this.targetField == 'All'? '*': this.selectedHosts);
+      console.log("target " + target);
 
       $.ajax({
         type: "POST",
         url: "run",
         data: {
           module: this.moduleField,
-          function: this.functionField
+          function: this.functionField,
+          target_type: this.targetField,
+          targets: target
         }
       }).done(function (msg) {
         console.log(msg);
