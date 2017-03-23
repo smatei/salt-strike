@@ -35,7 +35,8 @@
           <label for="targetHostsID" class="form-control-label">
             Hosts
           </label>
-          <v-select :searchable=true multiple :onChange=selectionChanged :options=hostList></v-select>
+          <v-select :searchable=true multiple :onChange=selectionChanged :options=hostList 
+            :loading=loadingHosts :disabled=loadingHosts></v-select>
         </div>
       </div>
       <div class="card-footer text-muted">
@@ -81,7 +82,8 @@ export default {
       resultsFunction: "",
       targetField: "All",
       selectedHosts: null,
-      hostList: []
+      hostList: [],
+      loadingHosts: false
     }
   },
   watch: {
@@ -93,6 +95,7 @@ export default {
       if (val == 'Hosts' && this.hostList.length == 0)
       {
         var vueObj = this;
+        vueObj.loadingHosts = true;
         $.ajax({
           type: "POST",
           url: "minionlist"
@@ -105,6 +108,7 @@ export default {
             var value = result.data[key]['String/id'];
             vueObj.hostList.push(value);
           }
+          vueObj.loadingHosts = false;
         });
       }
     }
