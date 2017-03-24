@@ -27,6 +27,7 @@ import com.suse.salt.netapi.client.SaltClient;
 import com.suse.salt.netapi.config.ClientConfig;
 import com.suse.salt.netapi.datatypes.target.Glob;
 import com.suse.salt.netapi.datatypes.target.MinionList;
+import com.suse.salt.netapi.datatypes.target.NodeGroup;
 import com.suse.salt.netapi.datatypes.target.Target;
 import com.suse.salt.netapi.exception.SaltException;
 import com.suse.salt.netapi.results.Result;
@@ -216,6 +217,9 @@ public class SaltController
       {
       case "All":
         saltTarget = new Glob("*");
+        break;
+      case "Group":
+        saltTarget = new NodeGroup(targets);
         break;
       case "Hosts":
         JsonParser parser = new JsonParser();

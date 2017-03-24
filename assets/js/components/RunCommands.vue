@@ -1,6 +1,6 @@
 <template>
   <div :class="[{'ui basic segment': true}, loading]">
-    <div class="card m-4">
+    <div class="card m-2">
       <div class="card-header">
         <strong>Run command</strong>
         <p class="card-subtitle text-muted">
@@ -20,7 +20,9 @@
           Function
         </label>
         <select id="functionSelectID" class="form-control" v-model="functionField">
-          <option v-for="funct in modulesProp[moduleField].functions" :value="funct.name">{{funct.name}}</option>
+          <option v-for="funct in modulesProp[moduleField].functions" :value="funct.name">
+            {{funct.name}}
+          </option>
         </select>
 
         <label for="targetSelectID" class="form-control-label">
@@ -29,14 +31,25 @@
         <select id="targetSelectID" class="form-control" v-model="targetField">
           <option value="All">All</option>
           <option value="Hosts">Hosts</option>
+          <option value="Group">Group</option>
         </select>
 
         <div v-cloak v-show="showHosts()">
           <label for="targetHostsID" class="form-control-label">
             Hosts
           </label>
-          <v-select :searchable=true multiple :onChange=selectionChanged :options=hostList 
+          <v-select id="targetHostsID" :searchable=true multiple
+            :onChange=selectionChanged :options=hostList
             :loading=loadingHosts :disabled=loadingHosts></v-select>
+        </div>
+
+        <div v-cloak v-show="showGroup()">
+          <label for="targetGroupID" class="form-control-label">
+            Group
+          </label>
+          <input id="targetGroupID" type="text"
+            placeholder="Group name" v-model="group" class="form-control">
+          </input>
         </div>
       </div>
       <div class="card-footer text-muted">
@@ -46,7 +59,7 @@
       </div>
     </div>
 
-    <div class="card m-4" v-cloak v-show="showResults">
+    <div class="card m-2" v-cloak v-show="showResults">
       <div class="card-header">
         <strong>Command results</strong>
         <p class="card-subtitle text-muted">
@@ -83,7 +96,8 @@ export default {
       targetField: "All",
       selectedHosts: null,
       hostList: [],
-      loadingHosts: false
+      loadingHosts: false,
+      group: ""
     }
   },
   watch: {
@@ -127,11 +141,26 @@ export default {
     showHosts: function() {
       return this.targetField == "Hosts";
     },
+    showGroup: function() {
+      return this.targetField == "Group";
+    },
     runCommand: function() {
       console.log(this.moduleField + " " + this.functionField);
       this.loading = 'loading';
       var obj = this;
-      var target = (this.targetField == 'All'? '*': this.selectedHosts);
+
+      var target = null;
+      switch (this.targetField) {
+        case "Group":
+          target = this.group;
+          break;
+        case "Hosts":
+          target = this.selectedHosts;
+          break;
+        default:
+          target = "*";
+      }
+
       console.log("target " + target);
 
       $.ajax({
