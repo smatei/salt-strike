@@ -216,16 +216,22 @@ export default {
           target = "*";
       }
 
-      $.ajax({
-        type: "POST",
-        url: "run",
-        data: {
+      var dataArray = {
           module: this.moduleField,
           function: this.functionField,
           target_type: this.targetField,
-          targets: target,
-          params: JSON.stringify(this.parameterValues)
-        }
+          targets: target
+        };
+
+      if (this.parameterValues != null)
+      {
+        dataArray["params"] = JSON.stringify(this.parameterValues);
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "run",
+        data: dataArray
       }).done(function (msg) {
         console.log(msg);
 

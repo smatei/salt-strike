@@ -259,7 +259,6 @@ public class SaltController
       Object[] parameterValues = null;
       Class[] parameterTypes = null;
 
-      System.out.println("---------------------------params = " + params);
       if (params != null)
       {
         JsonParser parser = new JsonParser();
