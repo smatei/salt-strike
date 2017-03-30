@@ -13,17 +13,31 @@
           Module
         </label>
         <select id="moduleSelectID" class="form-control" v-model="moduleField">
-          <option v-for="(value, key, index) in modulesProp" :value="key">{{key}}</option>
+          <option v-for="(value, key, index) in modulesProp" :value="key">
+            {{key}}
+          </option>
         </select>
 
         <label for="functionSelectID" class="form-control-label">
           Function
         </label>
         <select id="functionSelectID" class="form-control" v-model="functionField">
-          <option v-for="funct in modulesProp[moduleField].functions" :value="funct.name">
-            {{funct.name}}
+          <option v-for="(item, index) in modulesProp[moduleField].functions" :value="item.name">
+            {{item.name}}
           </option>
         </select>
+
+        <div v-cloak v-show="showParameters()">
+          <label for="parametersSelectID" class="form-control-label">
+            Parameters
+          </label>
+          <div id="parametersSelectID" class="form-control">
+            <div v-for="(item, index) of parameterFields" class="mb-1 mt-1">
+              <input type="text" :placeholder="item.name" class="form-control" v-model="parameterValues[item.name]['value']">
+              </input>
+            </div>
+          </div>
+        </div>
 
         <label for="targetSelectID" class="form-control-label">
           Target
@@ -89,6 +103,8 @@ export default {
     return {
       moduleField: "Test",
       functionField: "ping",
+      parameterFields: null,
+      parameterValues: null,
       loading: "",
       showResults: false,
       resultsModule: "",
@@ -104,6 +120,12 @@ export default {
     moduleField: function (val) {
       console.log(val);
       this.functionField = this.modulesProp[val].default;
+    },
+    functionField: function (val) {
+      var module = this.moduleField;
+      var funct = val;
+
+      this.displayParams(module, funct);
     },
     targetField: function (val) {
       if (val == 'Hosts' && this.hostList.length == 0)
@@ -134,6 +156,36 @@ export default {
     }
   },
   methods: {
+    displayParams: function(module, funct) {
+      var functionsArray = this.modulesProp[module]["functions"];
+      for (var key in this.modulesProp[module]["functions"])
+      {
+        if (functionsArray[key]["name"] == funct)
+        {
+          if (typeof(functionsArray[key]["parameters"]) === 'undefined')
+          {
+            this.parameterFields = null;
+            this.parameterValues = null;
+          }
+          else
+          {
+            this.parameterFields = functionsArray[key]["parameters"];
+
+            this.parameterValues = {};
+            this.parameterTypes = {};
+            var index = 0;
+            for (var pkey in this.parameterFields)
+            {
+              this.parameterValues[this.parameterFields[pkey]["name"]] = {};
+              this.parameterValues[this.parameterFields[pkey]["name"]]["value"] = "";
+              this.parameterValues[this.parameterFields[pkey]["name"]]["type"] = this.parameterFields[pkey]["type"];
+              this.parameterValues[this.parameterFields[pkey]["name"]]["index"] = index;
+              index++;
+            }
+          }
+        }
+      }
+    },
     selectionChanged: function(value) {
       console.log("selection changed " + value);
       this.selectedHosts = JSON.stringify(value);
@@ -141,11 +193,14 @@ export default {
     showHosts: function() {
       return this.targetField == "Hosts";
     },
+    showParameters: function() {
+      return this.parameterFields != null;
+    },
     showGroup: function() {
       return this.targetField == "Group";
     },
     runCommand: function() {
-      console.log(this.moduleField + " " + this.functionField);
+      console.log("run " + this.moduleField + " " + this.functionField + " " + JSON.stringify(this.parameterValues));
       this.loading = 'loading';
       var obj = this;
 
@@ -161,8 +216,6 @@ export default {
           target = "*";
       }
 
-      console.log("target " + target);
-
       $.ajax({
         type: "POST",
         url: "run",
@@ -170,7 +223,8 @@ export default {
           module: this.moduleField,
           function: this.functionField,
           target_type: this.targetField,
-          targets: target
+          targets: target,
+          params: JSON.stringify(this.parameterValues)
         }
       }).done(function (msg) {
         console.log(msg);

@@ -8,6 +8,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -72,6 +75,16 @@ public class SaltController
     JsonArray functions = new JsonArray();
     JsonObject function = new JsonObject();
     function.addProperty("name", "echo");
+
+    JsonArray parameters = new JsonArray();
+
+    JsonObject parameter = new JsonObject();
+    parameter.addProperty("name", "text");
+    parameter.addProperty("type", "java.lang.String");
+
+    parameters.add(parameter);
+
+    function.add("parameters", parameters);
     functions.add(function);
     function = new JsonObject();
     function.addProperty("name", "ping");
@@ -79,6 +92,45 @@ public class SaltController
     module.add("functions", functions);
 
     modules.add("Test", module);
+
+    module = new JsonObject();
+    module.addProperty("name", "Cmd");
+    module.addProperty("default", "run");
+    functions = new JsonArray();
+    function = new JsonObject();
+    function.addProperty("name", "run");
+
+    parameters = new JsonArray();
+
+    parameter = new JsonObject();
+    parameter.addProperty("name", "cmd");
+    parameter.addProperty("type", "java.lang.String");
+    parameters.add(parameter);
+
+    function.add("parameters", parameters);
+
+    functions.add(function);
+    function = new JsonObject();
+    function.addProperty("name", "exec_code_all");
+
+    parameters = new JsonArray();
+
+    parameter = new JsonObject();
+    parameter.addProperty("name", "lang");
+    parameter.addProperty("type", "java.lang.String");
+    parameters.add(parameter);
+
+    parameter = new JsonObject();
+    parameter.addProperty("name", "code");
+    parameter.addProperty("type", "java.lang.String");
+    parameters.add(parameter);
+
+    function.add("parameters", parameters);
+
+    functions.add(function);
+    module.add("functions", functions);
+
+    modules.add("Cmd", module);
 
     module = new JsonObject();
     module.addProperty("name", "Status");
@@ -191,7 +243,8 @@ public class SaltController
   public String runCommand(@RequestParam("module") String module,
       @RequestParam("function") String function,
       @RequestParam("target_type") String targetType,
-      @RequestParam("targets") String targets)
+      @RequestParam("targets") String targets,
+      @RequestParam(value="params", required=false) String params)
   {
     String packageName = "com.suse.salt.netapi.calls.modules.";
     String classFullName = packageName + module;
@@ -203,8 +256,33 @@ public class SaltController
     {
       clazz = Class.forName(classFullName);
 
-      Method method = clazz.getMethod(function, null);
-      LocalCall call = (LocalCall) method.invoke(null, null);
+      Object[] parameterValues = null;
+      Class[] parameterTypes = null;
+
+      System.out.println("---------------------------params = " + params);
+      if (params != null)
+      {
+        JsonParser parser = new JsonParser();
+        JsonObject parametersJSON = parser.parse(params).getAsJsonObject();
+
+        Set<Entry<String, JsonElement>> entries = parametersJSON.entrySet();
+        parameterValues = new Object[entries.size()];
+        parameterTypes = new Class[entries.size()];
+
+        for (Entry<String, JsonElement> entry: entries)
+        {
+          int index = entry.getValue().getAsJsonObject().get("index").getAsInt();
+          Class paramClass = Class.forName(entry.getValue().getAsJsonObject().get("type").getAsString());
+          parameterTypes[index] = paramClass;
+          // TODO: change this to appropriate type
+          Object parameterValue = entry.getValue().getAsJsonObject().get("value").getAsString();
+          parameterValues[index] = parameterValue;
+        }
+      }
+
+      Method method = clazz.getMethod(function, parameterTypes);
+
+      LocalCall call = (LocalCall) method.invoke(null, parameterValues);
 
       SaltCredentials credentials = SaltCredentials.GetInstance();
       SaltClient saltClient = new SaltClient(URI.create(credentials.GetAPIURL()));
