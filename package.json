@@ -6,7 +6,8 @@
     "vue": "^2.1.10",
     "vuetable-2": "^1.0.1",
     "vue-events": "vue-2.x",
-    "vue-select": "^2.2.0"
+    "vue-select": "^2.2.0",
+    "json-formatter-js": "v2.0.0"
   },
   "devDependencies": {
     "del": "^2.2.0",
