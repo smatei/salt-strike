@@ -1,9 +1,11 @@
 package com.smatei.salt;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -65,86 +70,7 @@ public class SaltController
   @RequestMapping("/run.html")
   public String run(Model model)
   {
-    JsonObject modules = new JsonObject();
-
-    // TODO: build module object using reflection
-    // from com.suse.salt.netapi.calls JsonObject
-    JsonObject module = new JsonObject();
-    module.addProperty("name", "Test");
-    module.addProperty("default", "ping");
-    JsonArray functions = new JsonArray();
-    JsonObject function = new JsonObject();
-    function.addProperty("name", "echo");
-
-    JsonArray parameters = new JsonArray();
-
-    JsonObject parameter = new JsonObject();
-    parameter.addProperty("name", "text");
-    parameter.addProperty("type", "java.lang.String");
-
-    parameters.add(parameter);
-
-    function.add("parameters", parameters);
-    functions.add(function);
-    function = new JsonObject();
-    function.addProperty("name", "ping");
-    functions.add(function);
-    module.add("functions", functions);
-
-    modules.add("Test", module);
-
-    module = new JsonObject();
-    module.addProperty("name", "Cmd");
-    module.addProperty("default", "run");
-    functions = new JsonArray();
-    function = new JsonObject();
-    function.addProperty("name", "run");
-
-    parameters = new JsonArray();
-
-    parameter = new JsonObject();
-    parameter.addProperty("name", "cmd");
-    parameter.addProperty("type", "java.lang.String");
-    parameters.add(parameter);
-
-    function.add("parameters", parameters);
-
-    functions.add(function);
-    function = new JsonObject();
-    function.addProperty("name", "exec_code_all");
-
-    parameters = new JsonArray();
-
-    parameter = new JsonObject();
-    parameter.addProperty("name", "lang");
-    parameter.addProperty("type", "java.lang.String");
-    parameters.add(parameter);
-
-    parameter = new JsonObject();
-    parameter.addProperty("name", "code");
-    parameter.addProperty("type", "java.lang.String");
-    parameters.add(parameter);
-
-    function.add("parameters", parameters);
-
-    functions.add(function);
-    module.add("functions", functions);
-
-    modules.add("Cmd", module);
-
-    module = new JsonObject();
-    module.addProperty("name", "Status");
-    module.addProperty("default", "meminfo");
-    functions = new JsonArray();
-    function = new JsonObject();
-    function.addProperty("name", "meminfo");
-    functions.add(function);
-    function = new JsonObject();
-    function.addProperty("name", "uptime");
-    functions.add(function);
-    module.add("functions", functions);
-
-    modules.add("Status", module);
+    JsonObject modules = GetSaltModulesAndFunctions();
 
     model.addAttribute("modules", modules.toString());
 
@@ -364,5 +290,88 @@ public class SaltController
     }
 
     return result.toString();
+  }
+
+  /**
+   * List modules and their functions from com.suse.salt.netapi.calls.modules
+   * @return
+   */
+  private JsonObject GetSaltModulesAndFunctions()
+  {
+    JsonObject modules = new JsonObject();
+
+    try
+    {
+      ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
+      ImmutableSet<ClassInfo> classes = cp.getTopLevelClasses("com.suse.salt.netapi.calls.modules");
+
+      for (ClassInfo clazz: classes)
+      {
+        String moduleName = clazz.getSimpleName();
+
+        Class<?> classObject = Class.forName(clazz.toString());
+
+        Method[] methods = classObject.getMethods();
+
+        JsonObject module = new JsonObject();
+
+        JsonArray functions = new JsonArray();
+
+        if (moduleName.equals("Cmd"))
+        {
+          System.out.println();
+        }
+
+        for (Method method: methods)
+        {
+          if ("com.suse.salt.netapi.calls.LocalCall".equals(method.getReturnType().getCanonicalName()))
+          {
+            JsonObject function = new JsonObject();
+            function.addProperty("name", method.getName());
+
+            JsonArray parameters = new JsonArray();
+
+            Parameter[] params = method.getParameters();
+
+            if (params.length > 0)
+            {
+              for (Parameter param: params)
+              {
+                JsonObject parameter = new JsonObject();
+
+                parameter.addProperty("name", param.getName());
+                parameter.addProperty("type", param.getType().getCanonicalName());
+
+                parameters.add(parameter);
+              }
+
+              function.add("parameters", parameters);
+            }
+            functions.add(function);
+          }
+        }
+
+        module.addProperty("name", moduleName);
+        if ("Test".equals(moduleName))
+        {
+          module.addProperty("default", "ping");
+        }
+        module.add("functions", functions);
+
+        modules.add(moduleName, module);
+      }
+    }
+    catch (IOException e)
+    {
+      // TODO Log exception
+      e.printStackTrace();
+    }
+    catch (ClassNotFoundException e)
+    {
+      // TODO Log exception
+      e.printStackTrace();
+    }
+
+    return modules;
   }
 }

@@ -120,6 +120,13 @@ export default {
     moduleField: function (val) {
       console.log(val);
       this.functionField = this.modulesProp[val].default;
+
+      if (typeof(this.functionField) == "undefined")
+      {
+        this.functionField = this.modulesProp[val]["functions"][0]["name"];
+      }
+
+      console.log(this.modulesProp[val].default);
     },
     functionField: function (val) {
       var module = this.moduleField;
