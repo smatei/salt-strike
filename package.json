@@ -7,7 +7,7 @@
     "vuetable-2": "^1.0.1",
     "vue-events": "vue-2.x",
     "vue-select": "^2.2.0",
-    "json-formatter-js": "v2.0.0"
+    "json-formatter-js": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.1.2",
@@ -29,6 +29,7 @@
     "gulp-sass": "^2.3.1",
     "gulp-sync": "^0.1.4",
     "gulp-uglify": "^1.5.3",
+    "less": "^2.7.2",
     "node-sass": "^4.5.2",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.13.0",
