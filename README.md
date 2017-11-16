@@ -1,4 +1,4 @@
-[Project Github Pages](https://github.com/smatei/salt-strike)
+[Project Github Pages](https://smatei.github.io/salt-strike/)
 
 # salt-strike
 
