@@ -3,12 +3,15 @@ package com.smatei.salt;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.suse.salt.netapi.AuthModule;
+import com.suse.salt.netapi.calls.modules.Grains;
 import com.suse.salt.netapi.client.SaltClient;
-import com.suse.salt.netapi.config.ClientConfig;
-import com.suse.salt.netapi.datatypes.Token;
+import com.suse.salt.netapi.datatypes.target.Glob;
+import com.suse.salt.netapi.datatypes.target.Target;
 import com.suse.salt.netapi.exception.SaltException;
+import com.suse.salt.netapi.results.Result;
 
 /**
  * Get list of minions from salt-api and create a
@@ -34,25 +37,24 @@ public class MinionNamesRequest extends RequestWrapper
     SaltCredentials credentials = SaltCredentials.GetInstance();
     SaltClient saltClient = new SaltClient(URI.create(credentials.GetAPIURL()));
 
-    Token token = saltClient.login(credentials.GetAPIUser(), credentials.GetAPIPassword(), AuthModule.PAM);
-    ClientConfig config = saltClient.getConfig();
-    config.put(ClientConfig.TOKEN, token.getToken());
-    config.put(ClientConfig.SOCKET_TIMEOUT, 20000);
+    // TODO: USE SOMETHING LIGHTER THAN grains.items
+    // SOMETHING THAT RETURNS JUST THE NAMES
+    Target<String> target = new Glob("*");
+    Map<String, Result<Map<String, Object>>> res = Grains.items(false).callSync(saltClient, target,
+            credentials.GetAPIUser(), credentials.GetAPIPassword(), AuthModule.PAM);
 
-    Map<String, Object> map = saltClient.getMinions();
     Map<String, Map<String, Object>> result = new HashMap<String, Map<String,Object>>();
-    map.entrySet().forEach(entry -> {
-        String key = entry.getKey();
-        Object value = entry.getValue();
 
-        // offline minions are returned as boolean
-        // {"return": [{"minion": false}]}
-        if (value instanceof Boolean) {
-            HashMap<String, Object> mapValue = new HashMap<String, Object>();
-            mapValue.put("id", key);
-            result.put(key, mapValue);
-        } else {
-            result.put(key, (Map<String, Object>) value);
+    res.forEach((key, value)->{
+        try
+        {
+            result.put(key, value.result().get());
+        }
+        catch(NoSuchElementException ex)
+        {
+            Map<String, Object> valueMap = new HashMap<>();
+            valueMap.put("id", key);
+            result.put(key, valueMap);
         }
     });
 

@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -197,11 +198,45 @@ public class SaltController
         for (Entry<String, JsonElement> entry: entries)
         {
           int index = entry.getValue().getAsJsonObject().get("index").getAsInt();
-          Class paramClass = Class.forName(entry.getValue().getAsJsonObject().get("type").getAsString());
-          parameterTypes[index] = paramClass;
-          // TODO: change this to appropriate type
-          Object parameterValue = entry.getValue().getAsJsonObject().get("value").getAsString();
-          parameterValues[index] = parameterValue;
+          String className = entry.getValue().getAsJsonObject().get("type").getAsString();
+          if ("boolean".equals(className))
+          {
+              parameterTypes[index] = boolean.class;
+              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsBoolean();
+          }
+          else if ("int".equals(className))
+          {
+              parameterTypes[index] = int.class;
+              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsInt();
+          }
+          else if ("float".equals(className))
+          {
+              parameterTypes[index] = float.class;
+              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsFloat();
+          }
+          else if ("double".equals(className))
+          {
+              parameterTypes[index] = double.class;
+              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsDouble();
+          }
+          else if ("short".equals(className))
+          {
+              parameterTypes[index] = double.class;
+              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsShort();
+          }
+          else if ("byte".equals(className))
+          {
+              parameterTypes[index] = byte.class;
+              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsByte();
+          }
+          else
+          {
+              Class paramClass = Class.forName(className);
+              parameterTypes[index] = paramClass;
+              // TODO: change this to appropriate type
+              Object parameterValue = entry.getValue().getAsJsonObject().get("value").getAsString();
+              parameterValues[index] = parameterValue;
+          }
         }
       }
 
@@ -268,6 +303,10 @@ public class SaltController
         {
           object = new JsonObject();
           object.addProperty("result", val.result().get().toString());
+        }
+        catch(NoSuchElementException ex)
+        {
+            object = new JsonObject();
         }
 
         JsonObject item = new JsonObject();

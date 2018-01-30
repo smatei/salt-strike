@@ -93,11 +93,14 @@ export default {
       var url = "img/" + os.toLowerCase() + ".svg";
       var text = value.replace("|", " ");
 
-      return "<img src='img/" + os.toLowerCase()
-        + ".svg' style='width:20px; height:20px;'"
-        + " onerror='this.onerror=null;this.src=\"img/linux.svg\"'"
-        + ">&nbsp;"
-        + text;
+	  if (os.lenght > 0)
+	  {
+	    return "<img src='img/" + os.toLowerCase()
+	      + ".svg' style='width:20px; height:20px;'"
+	      + " onerror='this.onerror=null;this.src=\"img/linux.svg\"'"
+	      + ">&nbsp;"
+	      + text;
+      }
     }
   },
   events: {
