@@ -75,16 +75,19 @@ public abstract class RequestWrapper
           switch (sortType)
           {
           case "String":
-            compare = o1.get(sortCriteria).getAsString().compareTo(o2.get(sortCriteria).getAsString());
+            String str1 = o1.get(sortCriteria) == null? "": o1.get(sortCriteria).getAsString();
+            String str2 = o2.get(sortCriteria) == null? "": o2.get(sortCriteria).getAsString();
+
+            compare = str1.compareTo(str2);
             break;
           case "Double":
-            Double d1 = o1.get(sortCriteria).getAsDouble();
-            Double d2 = o2.get(sortCriteria).getAsDouble();
+            Double d1 = o1.get(sortCriteria) == null? 0: o1.get(sortCriteria).getAsDouble();
+            Double d2 = o2.get(sortCriteria) == null? 0: o2.get(sortCriteria).getAsDouble();
             compare = d1.compareTo(d2);
             break;
           case "Integer":
-            Integer i1 = o1.get(sortCriteria).getAsInt();
-            Integer i2 = o2.get(sortCriteria).getAsInt();
+            Integer i1 = o1.get(sortCriteria) == null? 0: o1.get(sortCriteria).getAsInt();
+            Integer i2 = o2.get(sortCriteria) == null? 0: o2.get(sortCriteria).getAsInt();
             compare = i1 - i2;
             break;
           }

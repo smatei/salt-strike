@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.4.4.RELEASE</version>
+    <version>1.5.9.RELEASE</version>
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
 
@@ -41,9 +41,9 @@
     <dependency>
       <groupId>com.suse.salt</groupId>
       <artifactId>salt-netapi-client</artifactId>
-      <version>0.11.0</version>
+      <version>0.14.0</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/src/main/resources/salt-netapi-client-0.11.0-SNAPSHOT.jar</systemPath>
+      <systemPath>${project.basedir}/src/main/resources/salt-netapi-client-0.14.0-SNAPSHOT.jar</systemPath>
     </dependency>
 
     <dependency>

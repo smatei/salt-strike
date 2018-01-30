@@ -1,6 +1,7 @@
 package com.smatei.salt;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.suse.salt.netapi.AuthModule;
@@ -38,6 +39,23 @@ public class MinionNamesRequest extends RequestWrapper
     config.put(ClientConfig.TOKEN, token.getToken());
     config.put(ClientConfig.SOCKET_TIMEOUT, 20000);
 
-    return saltClient.getMinions();
+    Map<String, Object> map = saltClient.getMinions();
+    Map<String, Map<String, Object>> result = new HashMap<String, Map<String,Object>>();
+    map.entrySet().forEach(entry -> {
+        String key = entry.getKey();
+        Object value = entry.getValue();
+
+        // offline minions are returned as boolean
+        // {"return": [{"minion": false}]}
+        if (value instanceof Boolean) {
+            HashMap<String, Object> mapValue = new HashMap<String, Object>();
+            mapValue.put("id", key);
+            result.put(key, mapValue);
+        } else {
+            result.put(key, (Map<String, Object>) value);
+        }
+    });
+
+    return result;
   }
 }

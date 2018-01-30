@@ -81,7 +81,7 @@ public class CompositeColumn implements IColumn<String>
       {
         sb.append("|");
       }
-      sb.append(map.get(column.GetSaltAPIName()));
+      sb.append(map.get(column.GetSaltAPIName()) == null? "": map.get(column.GetSaltAPIName()));
     });
     return sb.toString();
   }
