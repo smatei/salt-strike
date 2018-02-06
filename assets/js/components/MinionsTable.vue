@@ -93,7 +93,7 @@ export default {
       var url = "img/" + os.toLowerCase() + ".svg";
       var text = value.replace("|", " ");
 
-	  if (os.lenght > 0)
+	  if (os.length > 0)
 	  {
 	    return "<img src='img/" + os.toLowerCase()
 	      + ".svg' style='width:20px; height:20px;'"
