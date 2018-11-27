@@ -54,7 +54,8 @@ public abstract class SimpleColumn<Type> implements IColumn<Type>
   private String GetColumnType()
   {
     java.lang.reflect.Type genericSuperclass = this.getClass().getGenericSuperclass();
-    if (genericSuperclass instanceof ParameterizedType) {
+    if (genericSuperclass instanceof ParameterizedType)
+    {
       ParameterizedType pt = (ParameterizedType) genericSuperclass;
       java.lang.reflect.Type type = pt.getActualTypeArguments()[0];
 

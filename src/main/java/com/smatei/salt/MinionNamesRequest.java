@@ -41,21 +41,22 @@ public class MinionNamesRequest extends RequestWrapper
     // SOMETHING THAT RETURNS JUST THE NAMES
     Target<String> target = new Glob("*");
     Map<String, Result<Map<String, Object>>> res = Grains.items(false).callSync(saltClient, target,
-            credentials.GetAPIUser(), credentials.GetAPIPassword(), AuthModule.PAM);
+        credentials.GetAPIUser(), credentials.GetAPIPassword(), AuthModule.PAM);
 
-    Map<String, Map<String, Object>> result = new HashMap<String, Map<String,Object>>();
+    Map<String, Map<String, Object>> result = new HashMap<String, Map<String, Object>>();
 
-    res.forEach((key, value)->{
-        try
-        {
-            result.put(key, value.result().get());
-        }
-        catch(NoSuchElementException ex)
-        {
-            Map<String, Object> valueMap = new HashMap<>();
-            valueMap.put("id", key);
-            result.put(key, valueMap);
-        }
+    res.forEach((key, value) ->
+    {
+      try
+      {
+        result.put(key, value.result().get());
+      }
+      catch (NoSuchElementException ex)
+      {
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("id", key);
+        result.put(key, valueMap);
+      }
     });
 
     return result;

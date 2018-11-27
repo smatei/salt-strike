@@ -8,8 +8,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
- * List of columns that will be copied from the salt-api result map
- * to the vuetable json model.
+ * List of columns that will be copied from the salt-api result map to the
+ * vuetable json model.
  *
  * @author Stefan Matei
  *
@@ -79,7 +79,8 @@ public class ColumnBuilder
   {
     JsonObject json = new JsonObject();
 
-    columns.stream().forEach((IColumn<?> column)->{
+    columns.stream().forEach((IColumn<?> column) ->
+    {
       Object object = column.GetValue(saltAPIResultEntry);
       if (object != null)
       {
@@ -92,7 +93,8 @@ public class ColumnBuilder
       return json;
     }
 
-    boolean result = columns.stream().anyMatch(column-> column.MatchesFilter(json.get(column.GetVuetableName()), filter));
-    return result? json: null;
+    boolean result = columns.stream()
+        .anyMatch(column -> column.MatchesFilter(json.get(column.GetVuetableName()), filter));
+    return result ? json : null;
   }
 }

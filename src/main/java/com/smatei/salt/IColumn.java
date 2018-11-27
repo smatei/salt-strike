@@ -35,7 +35,8 @@ public interface IColumn<Type>
    * Use the GetSaltAPIName method to get the original salt api
    * values from the original map.
    *
-   * @param saltAPIMap salt api result map
+   * @param saltAPIMap
+   *          salt api result map
    * @return
    */
   public Type GetValue(Map<String, Object> saltAPIMap);
@@ -44,8 +45,10 @@ public interface IColumn<Type>
    * Get original salt api values from the saltAPIMap using GetValue method and GetSaltAPIName
    * and add them to the vuetable json using GetVuetableName
    *
-   * @param vuetableJSON json for vuetable model (example: http://vuetable.ratiw.net/api/users)
-   * @param saltAPIMap salt api result map
+   * @param vuetableJSON
+   *          json for vuetable model (example: http://vuetable.ratiw.net/api/users)
+   * @param saltAPIMap
+   *          salt api result map
    */
   public void CopyColumnToJson(JsonObject vuetableJSON, Map<String, Object> saltAPIMap);
 

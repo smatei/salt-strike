@@ -22,11 +22,11 @@ public final class SaltCredentials
 
     URL fileURL = getClass().getClassLoader().getResource("salt-api.properties");
 
-    try(InputStream inputStream = fileURL.openStream())
+    try (InputStream inputStream = fileURL.openStream())
     {
       apiProperties.load(inputStream);
     }
-    catch(IOException ex)
+    catch (IOException ex)
     {
       ex.printStackTrace();
     }

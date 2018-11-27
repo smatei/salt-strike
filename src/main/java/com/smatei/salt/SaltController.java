@@ -160,8 +160,10 @@ public class SaltController
   /**
    * Run command using salt-api.
    *
-   * @param module Salt module
-   * @param function Salt module function
+   * @param module
+   *          Salt module
+   * @param function
+   *          Salt module function
    *
    * @return json with result
    */
@@ -171,7 +173,7 @@ public class SaltController
       @RequestParam("function") String function,
       @RequestParam("target_type") String targetType,
       @RequestParam("targets") String targets,
-      @RequestParam(value="params", required=false) String params)
+      @RequestParam(value = "params", required = false) String params)
   {
     String packageName = "com.suse.salt.netapi.calls.modules.";
     String classFullName = packageName + module;
@@ -195,47 +197,47 @@ public class SaltController
         parameterValues = new Object[entries.size()];
         parameterTypes = new Class[entries.size()];
 
-        for (Entry<String, JsonElement> entry: entries)
+        for (Entry<String, JsonElement> entry : entries)
         {
           int index = entry.getValue().getAsJsonObject().get("index").getAsInt();
           String className = entry.getValue().getAsJsonObject().get("type").getAsString();
           if ("boolean".equals(className))
           {
-              parameterTypes[index] = boolean.class;
-              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsBoolean();
+            parameterTypes[index] = boolean.class;
+            parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsBoolean();
           }
           else if ("int".equals(className))
           {
-              parameterTypes[index] = int.class;
-              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsInt();
+            parameterTypes[index] = int.class;
+            parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsInt();
           }
           else if ("float".equals(className))
           {
-              parameterTypes[index] = float.class;
-              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsFloat();
+            parameterTypes[index] = float.class;
+            parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsFloat();
           }
           else if ("double".equals(className))
           {
-              parameterTypes[index] = double.class;
-              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsDouble();
+            parameterTypes[index] = double.class;
+            parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsDouble();
           }
           else if ("short".equals(className))
           {
-              parameterTypes[index] = double.class;
-              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsShort();
+            parameterTypes[index] = double.class;
+            parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsShort();
           }
           else if ("byte".equals(className))
           {
-              parameterTypes[index] = byte.class;
-              parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsByte();
+            parameterTypes[index] = byte.class;
+            parameterValues[index] = entry.getValue().getAsJsonObject().get("value").getAsByte();
           }
           else
           {
-              Class paramClass = Class.forName(className);
-              parameterTypes[index] = paramClass;
-              // TODO: change this to appropriate type
-              Object parameterValue = entry.getValue().getAsJsonObject().get("value").getAsString();
-              parameterValues[index] = parameterValue;
+            Class paramClass = Class.forName(className);
+            parameterTypes[index] = paramClass;
+            // TODO: change this to appropriate type
+            Object parameterValue = entry.getValue().getAsJsonObject().get("value").getAsString();
+            parameterValues[index] = parameterValue;
           }
         }
       }
@@ -251,24 +253,25 @@ public class SaltController
 
       Target<?> saltTarget = null;
 
-      switch(targetType)
+      switch (targetType)
       {
-      case "All":
-        saltTarget = new Glob("*");
-        break;
-      case "Group":
-        saltTarget = new NodeGroup(targets);
-        break;
-      case "Hosts":
-        JsonParser parser = new JsonParser();
-        JsonArray hosts = parser.parse(targets).getAsJsonArray();
-        List<String> array = new ArrayList<String>();
-        hosts.forEach(element->{
-          array.add(element.getAsString());
-        });
+        case "All":
+          saltTarget = new Glob("*");
+          break;
+        case "Group":
+          saltTarget = new NodeGroup(targets);
+          break;
+        case "Hosts":
+          JsonParser parser = new JsonParser();
+          JsonArray hosts = parser.parse(targets).getAsJsonArray();
+          List<String> array = new ArrayList<String>();
+          hosts.forEach(element ->
+          {
+            array.add(element.getAsString());
+          });
 
-        saltTarget = new MinionList(array);
-        break;
+          saltTarget = new MinionList(array);
+          break;
       }
 
       Map<String, Result<?>> res = call.callSync(saltClient, saltTarget, credentials.GetAPIUser(),
@@ -299,14 +302,14 @@ public class SaltController
             object = parser.parse(val.result().get().toString()).getAsJsonObject();
           }
         }
-        catch(IllegalStateException | JsonSyntaxException ex)
+        catch (IllegalStateException | JsonSyntaxException ex)
         {
           object = new JsonObject();
           object.addProperty("result", val.result().get().toString());
         }
-        catch(NoSuchElementException ex)
+        catch (NoSuchElementException ex)
         {
-            object = new JsonObject();
+          object = new JsonObject();
         }
 
         JsonObject item = new JsonObject();
@@ -333,6 +336,7 @@ public class SaltController
 
   /**
    * List modules and their functions from com.suse.salt.netapi.calls.modules
+   * 
    * @return
    */
   private JsonObject GetSaltModulesAndFunctions()
@@ -344,7 +348,7 @@ public class SaltController
       ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
       ImmutableSet<ClassInfo> classes = cp.getTopLevelClasses("com.suse.salt.netapi.calls.modules");
 
-      for (ClassInfo clazz: classes)
+      for (ClassInfo clazz : classes)
       {
         String moduleName = clazz.getSimpleName();
 
@@ -361,7 +365,7 @@ public class SaltController
           System.out.println();
         }
 
-        for (Method method: methods)
+        for (Method method : methods)
         {
           if ("com.suse.salt.netapi.calls.LocalCall".equals(method.getReturnType().getCanonicalName()))
           {
@@ -374,7 +378,7 @@ public class SaltController
 
             if (params.length > 0)
             {
-              for (Parameter param: params)
+              for (Parameter param : params)
               {
                 JsonObject parameter = new JsonObject();
 
